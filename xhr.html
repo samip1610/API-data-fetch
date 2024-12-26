@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Information</title>
+    <style>
+        /* Style the body */
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.ibb.co/mB5dtNw/cars.jpg');
+            background-size: cover; /* Ensure the image covers the whole background */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent image repetition */
+            margin: 0;
+            padding: 20px;
+            color: #fff; /* White text color for better readability */
+            position: relative; /* Needed for overlay positioning */
+            min-height: 100vh; /* Ensure the background image covers the full height of the page */
+        }
+
+        /* Overlay effect to make background image clearer */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+            z-index: -1; /* Ensure overlay is behind the content */
+        }
+
+        /* Style the header */
+        h1 {
+            text-align: center;
+            color: #fff; /* White text for header */
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        /* Style the car output container */
+        #car-output {
+            background-color: rgba(0, 0, 0, 0); /* Fully transparent background */
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Light shadow for visibility */
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Style the section heading */
+        #car-output h2 {
+            font-size: 24px;
+            color: #fff; /* White text for the section heading */
+            margin-bottom: 15px;
+        }
+
+        /* Style the car list */
+        #car-output ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        /* Style individual list items */
+        #car-output ul li {
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white for items */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #555;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for list items */
+        #car-output ul li:hover {
+            background-color: #eef;
+            border-color: #ccc;
+        }
+
+        /* Style for car details (Model, Make, etc.) */
+        .car-detail {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Car Information</h1>
+
+    <div id="car-output"></div>
+
+    <script>
+        // Prepare XMLHttpRequest to fetch car data
+        const data = null;
+        const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        // Handle the request when it completes
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === this.DONE) {
+                if (this.status === 200) {
+                    // Parse the JSON response
+                    const responseData = JSON.parse(this.responseText);
+
+                    // Generate car data list
+                    let carsList = '<ul>';
+                    responseData.forEach(car => {
+                        carsList += `
+                            <li>
+                                <span class="car-detail">ID:</span> ${car.id || 'N/A'} <br>
+                                <span class="car-detail">Make:</span> ${car.make || 'N/A'} <br>
+                                <span class="car-detail">Model:</span> ${car.model || 'N/A'} <br>
+                                <span class="car-detail">Type:</span> ${car.type || 'N/A'} <br>
+                                <span class="car-detail">Year:</span> ${car.year || 'N/A'} <br>
+                            </li>`;
+                    });
+                    carsList += '</ul>';
+
+                    // Insert the car list into the HTML
+                    const outputElement = document.getElementById('car-output');
+                    outputElement.innerHTML = `
+                        <h2>Car Information</h2>
+                        ${carsList}
+                    `;
+                } else {
+                    console.error('Error fetching car data:', this.status, this.statusText);
+                    document.getElementById('car-output').textContent = 'Failed to load car data.';
+                }
+            }
+        });
+
+        // Open the API request
+        xhr.open('GET', 'https://car-data.p.rapidapi.com/cars?limit=10&page=0', true);
+        xhr.setRequestHeader('x-rapidapi-key', '8512e16b21me42jsnb23d6107e16c');
+        xhr.setRequestHeader('x-rapidapi-host', 'car-data.p.rapidapi.com');
+
+        // Send the request
+        xhr.send(data);
+    </script>
+</body>
+</html>
